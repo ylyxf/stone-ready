@@ -1,0 +1,13 @@
+[Unit]
+Description=stone ready service
+After=network.target
+
+[Service]
+ExecStart=/bin/sh /usr/lib/systemd/system/stone-ready-box.sh
+ExecStop=/bin/kill -s QUIT $MAINPID 
+User=root
+Group=root
+
+
+[Install]
+WantedBy=multi-user.target

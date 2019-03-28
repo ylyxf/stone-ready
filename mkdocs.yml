@@ -1,0 +1,22 @@
+site_name: 服务中台
+nav:
+    - 首页: index.md
+    - 架构: architecture.md
+    - 入门: 
+        - 用户: user.md
+        - 权限: auth.md
+        - 流程: flow.md
+        - 消息: message.md
+    - API:
+        - 用户: user.md
+        - 权限: auth.md
+        - 流程: flow.md
+        - 消息: message.md
+    - 贡献: contribute.md
+    - 关于: about.md
+
+theme:
+    name: mkdocs
+extra_javascript: [extra.js]
+
+    
