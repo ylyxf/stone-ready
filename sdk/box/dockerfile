@@ -68,10 +68,12 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	rm -rf /var/vache/yum  && \
 #bug fix cpu 100% for systemctl
 	systemctl mask getty@tty1.service
-RUN mkdir -p /usr/local/lib/stone-ready
+RUN mkdir -p /usr/local/lib/stone-ready && mkdir -p /root/service-script
 COPY dist/build.log	 	/root/build.log
 COPY dist/stone-ready-registry.war		/usr/local/lib/stone-ready/stone-ready-registry.war
-COPY stone-ready-box.sh		 /usr/lib/systemd/system/stone-ready-box.sh
+COPY stone-ready-box.sh		 		 /root/service-script/stone-ready-box.sh
+COPY stone-ready-box-start.sh		 /root/service-script/stone-ready-box-start.sh
+COPY stone-ready-box-start.sh		 /root/service-script/stone-ready-box-stop.sh
 COPY stone-ready-box.service /usr/lib/systemd/system/stone-ready-box.service
 RUN systemctl enable stone-ready-box
 

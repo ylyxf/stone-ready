@@ -3,8 +3,9 @@ Description=stone ready service
 After=network.target
 
 [Service]
-ExecStart=/bin/sh /usr/lib/systemd/system/stone-ready-box.sh
-ExecStop=/bin/kill -s QUIT $MAINPID 
+Type=forking
+ExecStart=/bin/sh /root/service-script/stone-ready-box.sh start
+ExecStop=/bin/sh  /root/service-script/stone-ready-box.sh stop 
 User=root
 Group=root
 

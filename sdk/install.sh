@@ -29,6 +29,8 @@ cd stone-ready-builder
 
 wget -P ./box/ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box/build.xml
 wget -P ./box/ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box/dockerfile
+wget -P ./box/ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box/stone-ready-box-start.sh
+wget -P ./box/ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box/stone-ready-box-stop.sh
 wget -P ./box/ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box/stone-ready-box.service
 wget -P ./box/ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box/stone-ready-box.sh
 wget -P ./ https://github.com/ylyxf/stone-ready/raw/$branch/sdk/box.sh
