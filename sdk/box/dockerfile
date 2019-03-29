@@ -73,7 +73,7 @@ COPY dist/build.log	 	/root/build.log
 COPY dist/stone-ready-registry.war		/usr/local/lib/stone-ready/stone-ready-registry.war
 COPY stone-ready-box.sh		 		 /root/service-script/stone-ready-box.sh
 COPY stone-ready-box-start.sh		 /root/service-script/stone-ready-box-start.sh
-COPY stone-ready-box-start.sh		 /root/service-script/stone-ready-box-stop.sh
+COPY stone-ready-box-stop.sh		 /root/service-script/stone-ready-box-stop.sh
 COPY stone-ready-box.service /usr/lib/systemd/system/stone-ready-box.service
 RUN systemctl enable stone-ready-box
 
