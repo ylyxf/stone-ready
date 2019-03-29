@@ -21,6 +21,8 @@ cd ..
 #clear
 rm -rf ./${build_dir}
 rm -rf ./box/dist
-#test 
-#docker run --name stone-ready-box -d --privileged -p80:80 -p5433:5432  -p15672:15672 -v /var/srbox/pgsql:/var/lib/pgsql/11/ stone-ready-box:latest
+#run 
+docker stop stone-ready-box
+docker rm stone-ready-box
+docker run --name stone-ready-box -d --privileged -p80:80 -p5433:5432  -p15672:15672 -v /var/srbox/pgsql:/var/lib/pgsql/11/ stone-ready-box:latest
 
