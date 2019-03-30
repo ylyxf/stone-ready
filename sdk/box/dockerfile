@@ -1,16 +1,26 @@
 # basic image
-FROM centos:7.2.1511
+FROM centos:7.6.1810
 
 MAINTAINER ylyxf "304189773@qq.com" 
 
 WORKDIR /root
 
+COPY resources/foundertype/   	/usr/share/fonts/foundertype/
+COPY resources/applications/  	/usr/local/bin/
+COPY service-script/	 		/root/service-script/
+COPY stone-ready-box.service 	/usr/lib/systemd/system/stone-ready-box.service
 #repo
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
 #locale
 	yum -y install kde-l10n-Chinese glibc-common && \
 	localedef -c -f UTF-8 -i zh_CN zh_CN.utf8 && \
 	sed -i "$ a export LC_ALL=zh_CN.UTF-8" /etc/profile && \
+#install fonts
+	yum -y install fontconfig && \
+	chmod -R 755 /usr/share/fonts/foundertype && \
+	yum -y install ttmkfdir && \
+	sed -i '/<dir prefix="xdg">fonts<\/dir>/a\<dir>\/usr\/share\/fonts\/foundertype<\/dir>' /etc/fonts/fonts.conf && \
+	fc-cache && \
 #time zone
 	cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
 	echo 'Asia/Shanghai' > /etc/timezone && \
@@ -33,20 +43,10 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	yum install java-1.8.0-openjdk java-1.8.0-openjdk-devel -y && \
 	sed -i "$ a export JAVA_HOME=/usr/lib/jvm/jre-openjdk" /etc/profile && \
 	source /etc/profile && \
-#install fonts
-	yum install wget -y && \
-	wget -P /usr/share/fonts/foundertype/ https://github.com/ylyxf/resources/raw/master/FZFSJW.TTF  && \
-	wget -P /usr/share/fonts/foundertype/ https://github.com/ylyxf/resources/raw/master/FZHTJW.TTF  && \
-	wget -P /usr/share/fonts/foundertype/ https://github.com/ylyxf/resources/raw/master/FZKTJW.TTF  && \
-	wget -P /usr/share/fonts/foundertype/ https://github.com/ylyxf/resources/raw/master/FZSSJW.TTF  && \
-	yum -y install fontconfig && \
-	chmod -R 755 /usr/share/fonts/foundertype && \
-	yum -y install ttmkfdir && \
-	sed -i '/<dir prefix="xdg">fonts<\/dir>/a\<dir>\/usr\/share\/fonts\/foundertype<\/dir>' /etc/fonts/fonts.conf && \
-	fc-cache && \
 #git
 	yum install git -y && \
-#tools		
+#tools	
+	yum install wget -y && \
 	yum install sysstat -y && \
 	yum install lsof -y && \
 	yum install iproute -y && \
@@ -55,6 +55,7 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	yum install postgresql11  -y && \
 	yum install postgresql11-server  -y && \
 	systemctl enable postgresql-11 && \
+	chmod +x /usr/local/bin/pgweb && \
 #rabbitmq
 	curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | bash && \
 	curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash   && \
@@ -63,23 +64,25 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	systemctl enable rabbitmq-server && \
 	echo [{rabbit, [{loopback_users, []}]}]. >> /etc/rabbitmq/rabbitmq.config  && \
 	/usr/sbin/rabbitmq-plugins enable rabbitmq_management  && \
+#shellinabox
+	yum install epel-release  -y && \
+	yum install shellinabox  -y && \
+	systemctl enable shellinaboxd && \
 #clean
 	yum clean all && \
 	rm -rf /var/vache/yum  && \
 #bug fix cpu 100% for systemctl
-	systemctl mask getty@tty1.service
-RUN mkdir -p /usr/local/lib/stone-ready && mkdir -p /root/service-script
+	systemctl mask getty@tty1.service  && \
+#stone-ready-box.service	
+	systemctl enable stone-ready-box
+
 COPY dist/build.log	 	/root/build.log
-COPY dist/stone-ready-registry.war		/usr/local/lib/stone-ready/stone-ready-registry.war
-COPY stone-ready-box.sh		 		 /root/service-script/stone-ready-box.sh
-COPY stone-ready-box-start.sh		 /root/service-script/stone-ready-box-start.sh
-COPY stone-ready-box-stop.sh		 /root/service-script/stone-ready-box-stop.sh
-COPY stone-ready-box.service /usr/lib/systemd/system/stone-ready-box.service
-RUN systemctl enable stone-ready-box
+COPY dist/service/	 	/usr/local/lib/stone-ready/
+COPY dist/web/	 		/usr/share/nginx/html/
 
 ENV JAVA_HOME /usr/lib/jvm/jre-openjdk
 ENV LC_ALL zh_CN.UTF-8
 
-EXPOSE 22 80 5432 1979 
+EXPOSE 22 80 5432 1979 15672
 
-ENTRYPOINT /usr/sbin/init 
+ENTRYPOINT /usr/sbin/init

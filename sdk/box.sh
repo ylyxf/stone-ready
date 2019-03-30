@@ -14,6 +14,13 @@ docker rm stone-ready-builder
 
 mv ./${build_dir}/dist ./box/dist
 mv ./${build_dir}/build.log ./box/dist/build.log
+if [ ! -d "./box/resources" ];then
+  wget -P ./box/resources/foundertype https://github.com/ylyxf/resources/raw/master/FZFSJW.TTF 
+  wget -P ./box/resources/foundertype https://github.com/ylyxf/resources/raw/master/FZHTJW.TTF   
+  wget -P ./box/resources/foundertype https://github.com/ylyxf/resources/raw/master/FZKTJW.TTF   
+  wget -P ./box/resources/foundertype https://github.com/ylyxf/resources/raw/master/FZSSJW.TTF
+  wget -P ./box/resources/applications https://github.com/ylyxf/resources/raw/master/pgweb   
+fi
 cd box
 docker build -t stone-ready-box .
 cd ..

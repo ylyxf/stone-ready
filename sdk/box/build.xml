@@ -23,7 +23,7 @@
 		
 		<!-- 构建目录 -->
 		<property name="build.dist" value="${basedir}/dist" />
-		<mkdir dir="${build.dist}" />
+		<mkdir dir="${build.dist}/service" />
 		
 		
 	</target>
@@ -35,7 +35,7 @@
 		<maven basedir="${src.localDir}/stone-ready/stone-ready-parent" goal="clean" />
 		
 		<maven basedir="${src.localDir}/stone-ready/stone-ready-registry" goal="package" />
-		<move file="${src.localDir}/stone-ready/stone-ready-registry/target/stone-ready-registry.war" todir="${build.dist}"/>
+		<move file="${src.localDir}/stone-ready/stone-ready-registry/target/stone-ready-registry.war" todir="${build.dist}/service"/>
 	</target>
 
 
