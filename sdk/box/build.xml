@@ -24,7 +24,7 @@
 		<!-- 构建目录 -->
 		<property name="build.dist" value="${basedir}/dist" />
 		<mkdir dir="${build.dist}/service" />
-		
+		<mkdir dir="${build.dist}/web" />
 		
 	</target>
 

@@ -50,6 +50,10 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	yum install sysstat -y && \
 	yum install lsof -y && \
 	yum install iproute -y && \
+#shellinabox
+	yum install epel-release  -y && \
+	yum install shellinabox  -y && \
+	systemctl enable shellinaboxd && \
 #postgresql 
 	yum install -y https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm && \ 
 	yum install postgresql11  -y && \
@@ -64,10 +68,6 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	systemctl enable rabbitmq-server && \
 	echo [{rabbit, [{loopback_users, []}]}]. >> /etc/rabbitmq/rabbitmq.config  && \
 	/usr/sbin/rabbitmq-plugins enable rabbitmq_management  && \
-#shellinabox
-	yum install epel-release  -y && \
-	yum install shellinabox  -y && \
-	systemctl enable shellinaboxd && \
 #clean
 	yum clean all && \
 	rm -rf /var/vache/yum  && \
@@ -83,6 +83,6 @@ COPY dist/web/	 		/usr/share/nginx/html/
 ENV JAVA_HOME /usr/lib/jvm/jre-openjdk
 ENV LC_ALL zh_CN.UTF-8
 
-EXPOSE 22 80 5432 1979 15672
+EXPOSE 22 80 4200 5432 8081 15672 1979
 
 ENTRYPOINT /usr/sbin/init

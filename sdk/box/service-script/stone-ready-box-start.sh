@@ -9,6 +9,8 @@ sed -i "s/host    all             all             127.0.0.1\/32            ident
 systemctl restart postgresql-11
 fi
 
+nohup pgweb --url postgres://postgres:postgres@127.0.0.1:5432/postgres &
+
 if [  -f "/usr/local/lib/stone-ready/stone-ready-registry.war" ];then
 nohup /usr/bin/java -jar /usr/local/lib/stone-ready/stone-ready-registry.war &
 fi
