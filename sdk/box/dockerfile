@@ -7,7 +7,6 @@ WORKDIR /root
 
 COPY resources/foundertype/   	/usr/share/fonts/foundertype/
 COPY resources/applications/  	/usr/local/bin/
-COPY service-script/	 		/root/service-script/
 COPY stone-ready-box.service 	/usr/lib/systemd/system/stone-ready-box.service
 #repo
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
@@ -77,7 +76,7 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	systemctl mask getty@tty1.service  && \
 #stone-ready-box.service	
 	systemctl enable stone-ready-box
-
+COPY service-script/	 		/root/service-script/
 COPY dist/build.log	 	/root/build.log
 COPY dist/service/	 	/usr/local/lib/stone-ready/
 COPY dist/web/	 		/usr/share/nginx/html/
