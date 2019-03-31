@@ -32,6 +32,7 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 	ssh-keygen -t dsa -f /etc/ssh/ssh_host_ed25519_key -N ''  && \
 	sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && \
 	sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && \
+	sed -i "s/#GatewayPorts no/GatewayPorts yes/g" /etc/ssh/sshd_config && \
 	echo "UseDNS no" >>  /etc/ssh/sshd_config && \
 	systemctl enable sshd   && \
 	yum install openssh-clients -y   && \
@@ -53,6 +54,7 @@ RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Cen
 #shellinabox
 	yum install epel-release  -y && \
 	yum install shellinabox  -y && \
+	sed -i "s/--disable-ssl-menu -s \/:LOGIN/-t -s \/:SSH:127.0.0.1/g" /etc/sysconfig/shellinaboxd && \
 	systemctl enable shellinaboxd && \
 #postgresql 
 	yum install -y https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm && \ 
@@ -83,6 +85,6 @@ COPY dist/web/	 		/usr/share/nginx/html/
 ENV JAVA_HOME /usr/lib/jvm/jre-openjdk
 ENV LC_ALL zh_CN.UTF-8
 
-EXPOSE 22 80 4200 5432 8081 15672 1979
+EXPOSE 22 80 4200 4201 5432 15672 1979
 
 ENTRYPOINT /usr/sbin/init

@@ -31,5 +31,5 @@ rm -rf ./box/dist
 #run 
 docker stop stone-ready-box
 docker rm stone-ready-box
-docker run --name stone-ready-box -d --privileged -p80:80 -p1922:22 -p1979:1979 -p4200:4200 -p8081:8081 -p5433:5432  -p15672:15672 -v /var/srbox/pgsql:/var/lib/pgsql/11/ stone-ready-box:latest
+docker run --name stone-ready-box -d --privileged -p80:80 -p1922:22 -p1979:1979 -p4200:4200 -p4201:4201 -p5433:5432  -p15672:15672 -v /var/srbox/pgsql:/var/lib/pgsql/11/ stone-ready-box:latest
 
