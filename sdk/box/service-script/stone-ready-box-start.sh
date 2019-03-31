@@ -9,7 +9,7 @@ systemctl restart postgresql-11
 su -c "psql -e -c  \"ALTER USER postgres WITH PASSWORD 'postgres' \"; " - postgres
 fi
 
-nohup pgweb --bind=0.0.0.0 --listen=4201 --url postgres://postgres:postgres@127.0.0.1:5432/postgres &
+nohup sleep 10s && pgweb --bind=0.0.0.0 --listen=4201 --url postgres://postgres:postgres@127.0.0.1:5432/postgres &
 
 if [  -f "/usr/local/lib/stone-ready/stone-ready-registry.war" ];then
 nohup /usr/bin/java -jar /usr/local/lib/stone-ready/stone-ready-registry.war &

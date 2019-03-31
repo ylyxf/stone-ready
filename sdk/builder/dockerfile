@@ -1,5 +1,5 @@
 # basic image
-FROM centos:7.2.1511
+FROM centos:7.6.1810
 
 MAINTAINER ylyxf "304189773@qq.com" 
 
