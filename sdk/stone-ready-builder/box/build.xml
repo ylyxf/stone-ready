@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="BuildAll">
+	<record name="${basedir}/build.log" loglevel="info" append="no" action="start"/>
+	<property environment="env" />
+	<!-- 构建全部 -->
+	<target name="build" depends="init">
+		<parallel>
+			<antcall target="buildService"/>
+			<antcall target="buildWeb"/>
+		</parallel>
+	</target>
+
+	<!-- 初始化 -->
+	<target name="init">
+		<property name="build.folder" value="${basedir}/build" />
+		<mkdir dir="${build.folder}" />
+
+		<!-- 源代码目录 -->
+		<property name="src.gitUrl" value="https://github.com/ylyxf/stone-ready.git" />
+		<property name="src.localDir" value="${build.folder}" />
+		<mkdir dir="${src.localDir}" />
+		<gitpull url="${src.gitUrl}" branch="${src.branch}" dir="${src.localDir}" />
+		
+		<!-- 构建目录 -->
+		<property name="build.dist" value="${basedir}/dist" />
+		<mkdir dir="${build.dist}/service" />
+		<mkdir dir="${build.dist}/web" />
+		
+	</target>
+
+
+	
+	<target name="buildService">
+		<maven basedir="${src.localDir}/stone-ready/stone-ready-parent" goal="install" />
+		<maven basedir="${src.localDir}/stone-ready/stone-ready-parent" goal="clean" />
+		
+		<maven basedir="${src.localDir}/stone-ready/stone-ready-registry" goal="package" />
+		<move file="${src.localDir}/stone-ready/stone-ready-registry/target/stone-ready-registry.war" todir="${build.dist}/service"/>
+	</target>
+
+
+	<target name="buildWeb">
+	</target>
+	
+
+	<macrodef name="gitpull">
+		<attribute name="url" />
+		<attribute name="branch" />
+		<attribute name="dir" />
+		<sequential>
+			<exec executable="git" dir="@{dir}">
+				<arg value="clone" />
+				<arg value="@{url}" />
+				<arg value="--branch" />
+				<arg value="@{branch}" />
+				<arg value="--depth" />
+				<arg value="1" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<!-- 宏定义 maven  -->
+	<macrodef name="maven">
+		<attribute name="options" default="" />
+		<attribute name="goal" />
+		<attribute name="basedir" />
+		<attribute name="resultproperty" default="maven.result" />
+		<element name="args" implicit="true" optional="true" />
+		<sequential>
+			<java classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
+				<jvmarg value="-Xmx512m" />
+				<jvmarg value="-Dmaven.multiModuleProjectDirectory=${env.MAVEN_HOME}" />
+				<jvmarg value="-Dmaven.repo.local=/root/lib/maven" />
+				<classpath>
+					<fileset dir="${env.MAVEN_HOME}/boot">
+						<include name="*.jar" />
+					</fileset>
+					<fileset dir="${env.MAVEN_HOME}/lib">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+				<sysproperty key="classworlds.conf" value="${env.MAVEN_HOME}/bin/m2.conf" />
+				<sysproperty key="maven.home" value="${env.MAVEN_HOME}" />
+
+				<arg line="--batch-mode @{options} @{goal}" />
+			</java>
+		</sequential>
+	</macrodef>
+
+	<!-- 宏定义npm run -->
+	<macrodef name="npmrun">
+		<attribute name="goal" />
+		<attribute name="dir" />
+		<sequential>
+			<exec executable="npm" osfamily="unix" dir="@{dir}">
+				<arg value="run" />
+				<arg value="@{goal}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="npm">
+		<attribute name="goal" />
+		<attribute name="dir" />
+		<sequential>
+			<exec executable="npm" osfamily="unix" dir="@{dir}">
+				<arg value="@{goal}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+</project>

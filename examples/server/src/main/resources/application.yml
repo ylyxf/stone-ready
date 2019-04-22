@@ -1,0 +1,25 @@
+server:
+  port: 1998
+
+spring:
+  application:
+    name: example-server
+    
+eureka:
+  instance:
+    hostname: 127.0.0.1
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:1979/eureka/
+
+stone:
+  ready:
+      portHubClient:
+          ip: 192.168.161.128
+          port: 22
+          account: root
+          password: root
+          enabled: true
+          

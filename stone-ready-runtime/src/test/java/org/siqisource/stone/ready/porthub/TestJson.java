@@ -2,6 +2,8 @@ package org.siqisource.stone.ready.porthub;
 
 import java.util.Map;
 
+import org.siqisource.stone.ready.tools.porthub.ServicePort;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

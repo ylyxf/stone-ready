@@ -32,6 +32,10 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.netflix.ribbon</groupId>
+			<artifactId>ribbon-loadbalancer</artifactId>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>

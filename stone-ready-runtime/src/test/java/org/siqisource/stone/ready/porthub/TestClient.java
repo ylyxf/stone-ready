@@ -1,5 +1,7 @@
 package org.siqisource.stone.ready.porthub;
 
+import org.siqisource.stone.ready.tools.porthub.PortHubClient;
+
 public class TestClient {
 
 	public static void main(String[] args) throws Exception {

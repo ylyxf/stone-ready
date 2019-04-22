@@ -1,0 +1,89 @@
+# basic image
+FROM centos:7.6.1810
+
+MAINTAINER ylyxf "304189773@qq.com" 
+
+WORKDIR /root
+
+COPY resources/foundertype/   	/usr/share/fonts/foundertype/
+COPY resources/applications/  	/usr/local/bin/
+COPY stone-ready-box.service 	/usr/lib/systemd/system/stone-ready-box.service
+#repo
+RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
+#locale
+	yum -y install kde-l10n-Chinese glibc-common && \
+	localedef -c -f UTF-8 -i zh_CN zh_CN.utf8 && \
+	sed -i "$ a export LC_ALL=zh_CN.UTF-8" /etc/profile && \
+#install fonts
+	yum -y install fontconfig && \
+	chmod -R 755 /usr/share/fonts/foundertype && \
+	yum -y install ttmkfdir && \
+	sed -i '/<dir prefix="xdg">fonts<\/dir>/a\<dir>\/usr\/share\/fonts\/foundertype<\/dir>' /etc/fonts/fonts.conf && \
+	fc-cache && \
+#time zone
+	cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+	echo 'Asia/Shanghai' > /etc/timezone && \
+#sshd 
+	echo "root:root" | chpasswd && \
+	yum install openssh-server -y  && \
+	ssh-keygen -q -t rsa -b 2048 -f /etc/ssh/ssh_host_rsa_key -N ''   && \
+	ssh-keygen -q -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -N ''  && \
+	ssh-keygen -t dsa -f /etc/ssh/ssh_host_ed25519_key -N ''  && \
+	sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && \
+	sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && \
+	sed -i "s/#GatewayPorts no/GatewayPorts yes/g" /etc/ssh/sshd_config && \
+	echo "UseDNS no" >>  /etc/ssh/sshd_config && \
+	systemctl enable sshd   && \
+	yum install openssh-clients -y   && \
+#nginx
+	echo -e '\n[nginx-stable]\nname=nginx stable repo\nbaseurl=http://nginx.org/packages/centos/$releasever/$basearch/\ngpgcheck=1\nenabled=1\ngpgkey=https://nginx.org/keys/nginx_signing.key\n'>> /etc/yum.repos.d/CentOS-Base.repo  && \
+	yum install nginx -y && \
+	systemctl enable nginx  && \
+#java
+	yum install java-1.8.0-openjdk java-1.8.0-openjdk-devel -y && \
+	sed -i "$ a export JAVA_HOME=/usr/lib/jvm/jre-openjdk" /etc/profile && \
+	source /etc/profile && \
+#git
+	yum install git -y && \
+#tools	
+	yum install wget -y && \
+	yum install sysstat -y && \
+	yum install lsof -y && \
+	yum install iproute -y && \
+#shellinabox
+	yum install epel-release  -y && \
+	yum install shellinabox  -y && \
+	sed -i "s/--disable-ssl-menu -s \/:LOGIN/-t -s \/:SSH:127.0.0.1/g" /etc/sysconfig/shellinaboxd && \
+	systemctl enable shellinaboxd && \
+#postgresql 
+	yum install -y https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm && \ 
+	yum install postgresql11  -y && \
+	yum install postgresql11-server  -y && \
+	systemctl enable postgresql-11 && \
+	chmod +x /usr/local/bin/pgweb && \
+#rabbitmq
+	curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | bash && \
+	curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | bash   && \
+	yum install erlang  -y && \
+	yum install rabbitmq-server -y && \
+	systemctl enable rabbitmq-server && \
+	echo [{rabbit, [{loopback_users, []}]}]. >> /etc/rabbitmq/rabbitmq.config  && \
+	/usr/sbin/rabbitmq-plugins enable rabbitmq_management  && \
+#clean
+	yum clean all && \
+	rm -rf /var/vache/yum  && \
+#bug fix cpu 100% for systemctl
+	systemctl mask getty@tty1.service  && \
+#stone-ready-box.service	
+	systemctl enable stone-ready-box
+COPY service-script/	 		/root/service-script/
+COPY dist/build.log	 	/root/build.log
+COPY dist/service/	 	/usr/local/lib/stone-ready/
+COPY dist/web/	 		/usr/share/nginx/html/
+
+ENV JAVA_HOME /usr/lib/jvm/jre-openjdk
+ENV LC_ALL zh_CN.UTF-8
+
+EXPOSE 22 80 4200 4201 5432 15672 1979
+
+ENTRYPOINT /usr/sbin/init
