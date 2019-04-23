@@ -8,12 +8,17 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import okhttp3.OkHttpClient;
 
 @SpringBootApplication
 @EnableEurekaClient
-@ComponentScan({ "client", "server","org.siqisource.stone.ready" })
+@ComponentScan({ "client", "server", "org.siqisource.stone.ready" })
 @EnableFeignClients(basePackages = "server")
+@Configuration
 public class Application {
 
 	public static void main(String[] args) {
@@ -22,8 +27,14 @@ public class Application {
 
 	@Bean
 	@LoadBalanced
-	RestTemplate restTemplate() {
-		return new RestTemplate();
+	RestTemplate restTemplate(OkHttpClient client) {
+		OkHttp3ClientHttpRequestFactory okHttp3ClientHttpRequestFactory = new OkHttp3ClientHttpRequestFactory(client);
+		return new RestTemplate(okHttp3ClientHttpRequestFactory);
+	}
+
+	@Bean
+	public OkHttpClient.Builder okHttpClientBuilder() {
+		return new OkHttpClient.Builder().addInterceptor(new OkHttpLoggingInterceptor());
 	}
 
 }

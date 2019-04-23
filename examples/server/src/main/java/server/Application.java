@@ -21,16 +21,16 @@ public class Application {
 		new SpringApplicationBuilder(Application.class).web(WebApplicationType.SERVLET).run(args);
 	}
 
-	@Bean
-	@org.springframework.cloud.context.config.annotation.RefreshScope
-	public ApplicationInfoManager eurekaApplicationInfoManager(EurekaInstanceConfig config) {
-		InstanceInfo instanceInfo = new InstanceInfoFactory().create(config);
-		
-		InstanceInfo.Builder builder = InstanceInfo.Builder.newBuilder();
-		builder.setIPAddr("192.168.0.11");
-		builder.setPort(123);
-		InstanceInfo newInstanceInfo = builder.getRawInstance();
-		return new ApplicationInfoManager(config, newInstanceInfo);
-	}
+//	@Bean
+//	@org.springframework.cloud.context.config.annotation.RefreshScope
+//	public ApplicationInfoManager eurekaApplicationInfoManager(EurekaInstanceConfig config) {
+//		InstanceInfo instanceInfo = new InstanceInfoFactory().create(config);
+//		
+//		InstanceInfo.Builder builder = InstanceInfo.Builder.newBuilder();
+//		builder.setIPAddr("192.168.0.11");
+//		builder.setPort(123);
+//		InstanceInfo newInstanceInfo = builder.getRawInstance();
+//		return new ApplicationInfoManager(config, newInstanceInfo);
+//	}
 
 }

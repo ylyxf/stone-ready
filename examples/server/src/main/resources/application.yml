@@ -14,6 +14,11 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:1979/eureka/
 
+
+ribbon:
+  okhttp:
+    enabled:true
+    
 stone:
   ready:
       portHubClient:
